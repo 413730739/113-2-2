@@ -21,7 +21,7 @@ function gotFaces(results) {
 }
 
 function setup() {
-  createCanvas(640, 480);
+  createCanvas(windowWidth, windowHeight); // 畫布大小為整個視窗
   video = createCapture(VIDEO, { flipped: true });
   video.hide();
 
@@ -30,20 +30,21 @@ function setup() {
 }
 
 function draw() {
-  background(0);
-  image(video, 0, 0);
+  // 畫背景漸層
+  setGradientBackground();
 
-  // Ensure at least one face is detected
+  // 將影像畫在視窗正中間，大小為400x400
+  let cx = width / 2;
+  let cy = height / 2;
+  let vw = 400;
+  let vh = 400;
+  imageMode(CENTER);
+  image(video, cx, cy, vw, vh);
+  imageMode(CORNER);
+
+  // 確認有偵測到臉
   if (faces.length > 0) {
     let face = faces[0];
-
-    // 畫出所有關鍵點（可移除這段如果只想要黑線與多邊形）
-    for (let i = 0; i < face.keypoints.length; i++) {
-      let keypoint = face.keypoints[i];
-      stroke(255, 255, 0);
-      strokeWeight(2);
-      point(keypoint.x, keypoint.y);
-    }
 
     // ====== 黑色線與黑色多邊形 ======
     stroke(0);
@@ -70,8 +71,8 @@ function draw() {
     vertex(p6.x, p6.y);
     endShape();
 
-    // 3. 238,241,125,19,354,461,458,250,462,370,94,141,242,20 連成多邊形並塗黑
-    let polyIdx = [238,241,125,19,354,461,458,250,462,370,94,141,242,20];
+    // 3. 79,237,457,309,250,462,370,94,141,242,20 連成多邊形並塗黑
+    let polyIdx = [79,237,457,309,250,462,370,94,141,242,20];
     fill(0);
     beginShape();
     for (let i = 0; i < polyIdx.length; i++) {
@@ -81,4 +82,32 @@ function draw() {
     endShape(CLOSE);
     noFill();
   }
+}
+
+// 新增：漸層背景函式
+function setGradientBackground() {
+  // 左下淡藍色 #b3e0ff
+  let c1 = color(179, 224, 255);
+  // 中間淡粉色 #ffd1e0
+  let c2 = color(255, 209, 224);
+  // 右上淡紫色 #e0d1ff
+  let c3 = color(224, 209, 255);
+
+  // 先做左下到右上雙向漸層
+  for (let y = 0; y < height; y++) {
+    let tY = y / height;
+    let left = lerpColor(c1, c2, tY);
+    let right = lerpColor(c2, c3, tY);
+    for (let x = 0; x < width; x++) {
+      let tX = x / width;
+      let c = lerpColor(left, right, tX);
+      set(x, y, c);
+    }
+  }
+  updatePixels();
+}
+
+// 畫布隨視窗大小自動調整
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
