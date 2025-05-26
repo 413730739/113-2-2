@@ -41,8 +41,8 @@ function draw() {
   // 將影像畫在視窗正中間，大小為600x600
   let cx = width / 2;
   let cy = height / 2;
-  let vw = 600;
-  let vh = 600;
+  let vw = 800;
+  let vh = 800;
   imageMode(CENTER);
   image(video, cx, cy, vw, vh);
   imageMode(CORNER);
@@ -54,8 +54,8 @@ function draw() {
     // 計算影像縮放與平移
     let videoW = video.width;
     let videoH = video.height;
-    let vw = 600;
-    let vh = 600;
+    let vw = 800;
+    let vh = 800;
     let cx = width / 2;
     let cy = height / 2;
     let scaleX = vw / videoW;
