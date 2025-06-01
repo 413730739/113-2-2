@@ -9,6 +9,7 @@ let bgImg; // 用來存背景圖片
 let heartImg; // 愛心圖片
 let hearts = []; // 愛心粒子陣列
 let texts = [];
+let isProcessing = false;
 
 function preload() {
   heartImg = loadImage("2.png"); // 請確保2.png在專案資料夾
@@ -65,9 +66,12 @@ function gotResults(r) {
 }
 
 function draw() {
-  // 每幀送入影像給 Holistic
-  if (video.loadedmetadata) {
-    holistic.send({image: video.elt});
+  // 只在上一幀處理完再送新影像
+  if (!isProcessing && video.loadedmetadata) {
+    isProcessing = true;
+    holistic.send({image: video.elt}).then(() => {
+      isProcessing = false;
+    });
   }
 
   // 用 1.png 當背景，鋪滿整個畫布
