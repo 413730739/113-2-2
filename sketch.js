@@ -5,13 +5,14 @@
 let video;
 let holistic;
 let results = null;
-let bgImg; // 用來存漸層背景
+let bgImg; // 用來存背景圖片
 let heartImg; // 愛心圖片
 let hearts = []; // 愛心粒子陣列
 let texts = [];
 
 function preload() {
   heartImg = loadImage("2.png"); // 請確保2.png在專案資料夾
+  bgImg = loadImage("1.png");    // 請確保1.png在專案資料夾
 }
 
 function setup() {
@@ -33,20 +34,6 @@ function setup() {
   });
   holistic.onResults(gotResults);
 
-  // 啟動 MediaPipe 處理
-  const camera = new Camera(video.elt, {
-    onFrame: async () => {
-      await holistic.send({image: video.elt});
-    },
-    width: 640,
-    height: 480
-  });
-  camera.start();
-
-  // 產生漸層背景
-  bgImg = createGraphics(width, height);
-  setGradientBackground(bgImg);
-
   // 產生5個隨機顏色、位置、速度的文字（顏色不重複，速度更快）
   let palette = shuffle([
     color(255, 183, 197), // 粉
@@ -62,8 +49,8 @@ function setup() {
     texts.push({
       x: random(100, width-300),
       y: random(100, height-100),
-      vx: random([-4, 4]), // 更快
-      vy: random([-4, 4]), // 更快
+      vx: random([-4, 4]),
+      vy: random([-4, 4]),
       color: palette[i]
     });
   }
@@ -71,8 +58,6 @@ function setup() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  bgImg = createGraphics(width, height);
-  setGradientBackground(bgImg);
 }
 
 function gotResults(r) {
@@ -80,6 +65,12 @@ function gotResults(r) {
 }
 
 function draw() {
+  // 每幀送入影像給 Holistic
+  if (video.loadedmetadata) {
+    holistic.send({image: video.elt});
+  }
+
+  // 用 1.png 當背景，鋪滿整個畫布
   image(bgImg, 0, 0, width, height);
 
   // --- 馬卡龍色漂浮文字 ---
@@ -117,7 +108,7 @@ function draw() {
   imageMode(CORNER);
 
   if (results) {
-    // 臉部線條（以輪廓為例）
+    // 臉部線條
     if (results.faceLandmarks) {
       stroke(0);
       strokeWeight(2);
@@ -217,7 +208,7 @@ function drawHandAndET(landmarks, cx, cy, vw, vh) {
   let minX = Math.min(...xs);
   let maxX = Math.max(...xs);
 
-  // 判斷五指張開（只要橫向展開夠寬即可，不要求完全平放）
+  // 判斷五指張開（只要橫向展開夠寬即可，完全平放也會顯示）
   if ((maxX - minX) > 150) {
     // 手掌中心（用 0 號點）
     let palm = landmarks[0];
@@ -230,28 +221,4 @@ function drawHandAndET(landmarks, cx, cy, vw, vh) {
     textStyle(BOLD);
     text("ET", px, py);
   }
-}
-
-// 產生左下淡藍→中間淡粉→右上淡紫的漸層背景
-function setGradientBackground(g) {
-  let c1 = color(179, 224, 255); // 左下淡藍
-  let c2 = color(255, 209, 224); // 中間淡粉
-  let c3 = color(224, 209, 255); // 右上淡紫
-
-  g.loadPixels();
-  for (let y = 0; y < g.height; y++) {
-    for (let x = 0; x < g.width; x++) {
-      // 兩段漸層：左下到中間，中間到右上
-      let tX = x / g.width;
-      let tY = y / g.height;
-      // 混合三色
-      let c = lerpColor(
-        lerpColor(c1, c2, (tX + tY) / 2),
-        c3,
-        (tX + (1 - tY)) / 2
-      );
-      g.set(x, y, c);
-    }
-  }
-  g.updatePixels();
 }
