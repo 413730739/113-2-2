@@ -225,4 +225,179 @@ function drawHandAndET(landmarks, cx, cy, vw, vh) {
     textStyle(BOLD);
     text("ET", px, py);
   }
+
+  // 只宣告一次
+  let palm = landmarks[0];
+  let tip1 = landmarks[8];   // 食指
+  let tip2 = landmarks[12];  // 中指
+  let tip3 = landmarks[16];  // 無名指
+  let tip4 = landmarks[20];  // 小指
+  let tip0 = landmarks[4];   // 拇指
+
+  // ----------- 判斷比1手勢並顯示框框與文字 -----------
+  let isOne = true;
+  for (let pt of [tip0, tip2, tip3, tip4]) {
+    let d = dist(pt.x, pt.y, palm.x, palm.y);
+    if (d > 0.22) isOne = false;
+  }
+  if (dist(tip1.x, tip1.y, palm.x, palm.y) < 0.32) isOne = false;
+
+  if (isOne) {
+    let fx = tip1.x * vw + cx - vw/2;
+    let fy = tip1.y * vh + cy - vh/2;
+    let boxW = 420, boxH = 260;
+    let boxX = fx + 30;
+    let boxY = fy - boxH/2;
+    if (boxX + boxW > width) boxX = fx - boxW - 30;
+    if (boxY < 0) boxY = 10;
+
+    push();
+    stroke(255, 120, 120);
+    strokeWeight(4);
+    fill(255, 255, 255, 230);
+    rect(boxX, boxY, boxW, boxH, 20);
+
+    fill(60, 60, 60);
+    noStroke();
+    textSize(18);
+    textAlign(LEFT, TOP);
+    let txt = "發展方向\n" +
+      "一、多媒體教材開發之專案管理人員。\n" +
+      "二、多媒體教材開發之設計與製作人員。\n" +
+      "三、數位學習導入推廣之規劃執行人員。\n" +
+      "四、人力資源發展之規劃管理人員。\n" +
+      "五、數位教育訓練之規劃與執行人員。\n" +
+      "六、教學資源中心之管理與研究人員。\n" +
+      "七、高級教育與中小學學校之資訊行政主管人員。";
+    text(txt, boxX + 18, boxY + 16, boxW - 36, boxH - 32);
+    pop();
+  }
+
+  // ----------- 判斷比2手勢並顯示框框與文字 -----------
+  let isTwo = true;
+  // 其他三指要靠近手掌
+  for (let pt of [tip0, tip3, tip4]) {
+    let d = dist(pt.x, pt.y, palm.x, palm.y);
+    if (d > 0.22) isTwo = false;
+  }
+  // 食指與中指要夠遠
+  if (dist(tip1.x, tip1.y, palm.x, palm.y) < 0.32) isTwo = false;
+  if (dist(tip2.x, tip2.y, palm.x, palm.y) < 0.32) isTwo = false;
+  // 食指與中指要分開
+  if (dist(tip1.x, tip1.y, tip2.x, tip2.y) < 0.08) isTwo = false;
+
+  if (isTwo) {
+    let fx = tip1.x * vw + cx - vw/2;// 食指 x 座標
+    let fy = tip1.y * vh + cy - vh/2;
+    let boxW = 650, boxH = 200;// 框框寬高
+    let boxX = fx + 30;
+    let boxY = fy - boxH/2;
+    if (boxX + boxW > width) boxX = fx - boxW - 30;
+    if (boxY < 0) boxY = 10;
+
+    push();
+    stroke(120, 120, 255);
+    strokeWeight(4);
+    fill(255, 255, 255, 240);
+    rect(boxX, boxY, boxW, boxH, 20);
+
+    fill(30, 30, 80);
+    noStroke();
+    textSize(18);
+    textAlign(LEFT, TOP);
+    let txt = "獨有特色\n「數位學習、行動學習、虛擬學習、AI學習」\n" +
+    "之創新教學為本系研究與發展之重點，\n" +
+    "本系課程規劃「數位媒體製作、教育理論、人力資源發展、統整課程」四面向，\n" +
+    "教學上運用最新科技教學方法並結合科技學習環境，\n" +
+    "以培養學生具備「教學設計、教材製作、專案管理、環境設計」四項核心能力，\n" +
+    "並以畢業專題與企業實習課程，以「產學合作」與企業公司接軌，\n" +
+    "協助同學提早與企業實務接軌，培養未來就業能力。";
+    text(txt, boxX + 18, boxY + 16, boxW - 36, boxH - 32);
+    pop();
+  }
+
+  // ----------- 判斷比3手勢並顯示框框與文字 -----------
+  let isThree = true;
+  // 只有食指(8)、中指(12)、無名指(16)要伸直，其餘兩指(4,20)要靠近手掌
+  for (let pt of [tip0, tip4]) {
+    let d = dist(pt.x, pt.y, palm.x, palm.y);
+    if (d > 0.22) isThree = false;
+  }
+  // 三指要夠遠
+  if (dist(tip1.x, tip1.y, palm.x, palm.y) < 0.32) isThree = false;
+  if (dist(tip2.x, tip2.y, palm.x, palm.y) < 0.32) isThree = false;
+  if (dist(tip3.x, tip3.y, palm.x, palm.y) < 0.32) isThree = false;
+  // 三指要分開
+  if (dist(tip1.x, tip1.y, tip2.x, tip2.y) < 0.08) isThree = false;
+  if (dist(tip2.x, tip2.y, tip3.x, tip3.y) < 0.08) isThree = false;
+
+  if (isThree) {
+    let fx = tip1.x * vw + cx - vw/2; // 以食指為主
+    let fy = tip1.y * vh + cy - vh/2;
+    let boxW = 720, boxH = 200;
+    let boxX = fx + 30;
+    let boxY = fy - boxH/2;
+    if (boxX + boxW > width) boxX = fx - boxW - 30;
+    if (boxY < 0) boxY = 10;
+
+    push();
+    stroke(80, 180, 80);
+    strokeWeight(4);
+    fill(255, 255, 255, 240);// 框框透明度
+    rect(boxX, boxY, boxW, boxH, 20);
+
+    fill(20, 80, 20);
+    noStroke();
+    textSize(18);
+    textAlign(LEFT, TOP);
+    let txt = "沿革與現況\n" +
+      "教育科技學系成立於1997年，是台灣第1所專科培育教育科技專業人才的系所。\n" +
+      "本系在理論上融合教育、管理及傳播的理論概念，\n" +
+      "在實務方面則結合數位科技與傳播媒體的應用，提供創新科技學習、媒體製作、\n" +
+      "教學設計、專案管理等課程。本系完整的學士班與碩士班課程規劃，\n" +
+      "已培育超過2000位「數位學習教材製作、人力資源發展與數位專案開發」的優秀人才，\n" +
+      "成為系所充沛之企業界資源。";
+    text(txt, boxX + 18, boxY + 16, boxW - 36, boxH - 32);
+    pop();
+  }
+
+  // ----------- 判斷OK手勢並顯示框框與文字 -----------
+  let isOK = true;
+  // 拇指(4)與食指(8)指尖距離要很近
+  if (dist(tip0.x, tip0.y, tip1.x, tip1.y) > 0.08) isOK = false;
+  // 其他三指要伸直
+  if (dist(tip2.x, tip2.y, palm.x, palm.y) < 0.32) isOK = false;
+  if (dist(tip3.x, tip3.y, palm.x, palm.y) < 0.32) isOK = false;
+  if (dist(tip4.x, tip4.y, palm.x, palm.y) < 0.32) isOK = false;
+
+  if (isOK) {
+    // 框框位置以中指指尖為主
+    let fx = tip2.x * vw + cx - vw/2;
+    let fy = tip2.y * vh + cy - vh/2;
+    let boxW = 720, boxH = 200;
+    let boxX = fx + 30;
+    let boxY = fy - boxH/2;
+    if (boxX + boxW > width) boxX = fx - boxW - 30;
+    if (boxY < 0) boxY = 10;
+
+    push();
+    stroke(80, 180, 80);
+    strokeWeight(4);
+    fill(255, 255, 255, 240);
+    rect(boxX, boxY, boxW, boxH, 20);
+
+    fill(20, 80, 20);
+    noStroke();
+    textSize(18);
+    textAlign(LEFT, TOP);
+    let txt = "沿革與現況\n" +
+      "教育科技學系成立於1997年，是台灣第1所專科培育教育科技專業人才的系所。\n" +
+      "本系在理論上融合教育、管理及傳播的理論概念，\n" +
+      "在實務方面則結合數位科技與傳播媒體的應用，提供創新科技學習、媒體製作、\n" +
+      "教學設計、專案管理等課程。本系完整的學士班與碩士班課程規劃，\n" +
+      "已培育超過2000位「數位學習教材製作、人力資源發展與數位專案開發」的優秀人才，\n" +
+      "成為系所充沛之企業界資源。";
+      text(txt, boxX + 18, boxY + 16, boxW - 36, boxH - 32);
+    pop();
+  }
 }
