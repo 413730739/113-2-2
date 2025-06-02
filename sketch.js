@@ -10,6 +10,8 @@ let heartImg; // 愛心圖片
 let hearts = []; // 愛心粒子陣列
 let texts = [];
 let isProcessing = false;
+let gameBtn;
+let gameDiv;
 
 function preload() {
   heartImg = loadImage("2.png"); // 請確保2.png在專案資料夾
@@ -55,6 +57,61 @@ function setup() {
       color: palette[i]
     });
   }
+
+  // 新增左上角「遊戲」按鈕
+  gameBtn = createButton("遊戲");
+  gameBtn.position(20, 20);// 按鈕位置
+  gameBtn.style('font-size', '22px');// 按鈕字體大小
+  gameBtn.style('padding', '20px 24px');// 按鈕內邊距
+  gameBtn.style('background', '#ffd6e0');
+  gameBtn.style('border-radius', '10px');// 按鈕圓角
+  gameBtn.style('border', '2px solid #ff8fa3');
+  gameBtn.style('color', '#333');
+  gameBtn.style('z-index', '10');
+  gameBtn.mousePressed(showGameBox);
+}
+
+function showGameBox() {
+  // 若已經有框就不重複產生
+  if (gameDiv) return;
+  gameDiv = createDiv();
+  gameDiv.position((windowWidth-2000)/2, (windowHeight-1000)/2);
+  gameDiv.size(2000, 1000);
+  gameDiv.style('background', '#fff');
+  gameDiv.style('border', '4px solid #ff8fa3');
+  gameDiv.style('border-radius', '18px');
+  gameDiv.style('box-shadow', '0 0 24px #8888');
+  gameDiv.style('z-index', '20');
+  gameDiv.style('overflow', 'hidden');
+  gameDiv.style('position', 'fixed');
+
+  // 右上角叉叉關閉按鈕
+  let closeBtn = createButton("✕");
+  closeBtn.parent(gameDiv);
+  closeBtn.position(2000-42, 10);
+  closeBtn.style('position', 'absolute');
+  closeBtn.style('font-size', '24px');
+  closeBtn.style('padding', '2px 10px');
+  closeBtn.style('background', '#ff8fa3');
+  closeBtn.style('border', 'none');
+  closeBtn.style('border-radius', '50%');
+  closeBtn.style('color', '#fff');
+  closeBtn.style('cursor', 'pointer');
+  closeBtn.mousePressed(()=>{
+    gameDiv.remove();
+    gameDiv = null;
+  });
+
+  // 網頁 iframe
+  let iframe = createElement('iframe');
+  iframe.attribute('src', 'https://413730739.github.io/113-2-2-01/');
+  iframe.attribute('width', '800');
+  iframe.attribute('height', '650');
+  iframe.attribute('frameborder', '0');
+  iframe.style('border', 'none');
+  iframe.style('display', 'block');
+  iframe.position(0, 50);
+  iframe.parent(gameDiv);
 }
 
 function windowResized() {
@@ -305,7 +362,8 @@ function drawHandAndET(landmarks, cx, cy, vw, vh) {
     noStroke();
     textSize(18);
     textAlign(LEFT, TOP);
-    let txt = "獨有特色\n「數位學習、行動學習、虛擬學習、AI學習」\n" +
+    let txt = "獨有特色\n" +
+    "「數位學習、行動學習、虛擬學習、AI學習」\n" +
     "之創新教學為本系研究與發展之重點，\n" +
     "本系課程規劃「數位媒體製作、教育理論、人力資源發展、統整課程」四面向，\n" +
     "教學上運用最新科技教學方法並結合科技學習環境，\n" +
