@@ -75,8 +75,8 @@ function showGameBox() {
   // 若已經有框就不重複產生
   if (gameDiv) return;
   gameDiv = createDiv();
-  gameDiv.position((windowWidth-2000)/2, (windowHeight-1000)/2);
-  gameDiv.size(2000, 1000);
+  gameDiv.position((windowWidth-800)/2, (windowHeight-700)/2);
+  gameDiv.size(800, 700);
   gameDiv.style('background', '#fff');
   gameDiv.style('border', '4px solid #ff8fa3');
   gameDiv.style('border-radius', '18px');
@@ -88,7 +88,7 @@ function showGameBox() {
   // 右上角叉叉關閉按鈕
   let closeBtn = createButton("✕");
   closeBtn.parent(gameDiv);
-  closeBtn.position(2000-42, 10);
+  closeBtn.position(800-42, 10);
   closeBtn.style('position', 'absolute');
   closeBtn.style('font-size', '24px');
   closeBtn.style('padding', '2px 10px');
